@@ -1,37 +1,12 @@
-# create-release-notes
+name: Release
 
-"最新のタグ" と "一つ前のタグ" 間のコミットメッセージからリリースノートを作成します。
-
-## demo
-
-![image](./assets/image.png)
-
-## Inputs
-
-## Outputs
-
-|Name|Description|
-|:--|:--|
-|RELEASE_NOTES|リリースノートの内容|
-
-## Requirements
-
-- [actions/create-release](https://github.com/actions/create-release)と一緒に使用することを想定しています。
-
-## Usage
-
-### 一般的な使用方法
-
-タグ付けされた際に発動するように設定します。
-
-```yaml
 on:
   push:
     tags:
       - "*"
 
 jobs:
-  Release:
+  ecr-push:
     runs-on: ubuntu-latest
     name: Release
     steps:
@@ -46,6 +21,7 @@ jobs:
 
       - name: Create Release
         uses: actions/create-release@v1
+        id: create-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -55,4 +31,3 @@ jobs:
             ${{ steps.create-release-notes.outputs.RELEASE_NOTES }}
           draft: false
           prerelease: false
-```

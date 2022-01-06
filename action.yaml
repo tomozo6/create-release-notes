@@ -1,0 +1,35 @@
+name: "create-release-notes"
+author: "tomozo6"
+description: "Create release notes from the commit message."
+branding:
+  icon: "file-text"
+  color: "green"
+outputs:
+  RELEASE_NOTES:
+    description: "Release notes"
+    value: ${{ steps.release-notes.outputs.RELEASE_NOTES }}
+runs:
+  using: "composite"
+  steps:
+    - id: release-notes
+      shell: bash
+      run: |
+        TAG_LATEST=$(git tag --sort=-creatordate | sed -n 1p)
+        echo "TAG_LATEST=${TAG_LATEST}"
+        TAG_PREVIOUS=$(git tag --sort=-creatordate | sed -n 2p)
+        echo "TAG_PREVIOUS=${TAG_PREVIOUS}"
+        # Header
+        HEADER="## What\'s Changed"
+        # Body
+        if [ ${TAG_PREVIOUS} ]; then
+          BETWEEN_TAGS="${TAG_PREVIOUS}..${TAG_LATEST}"
+        else
+          BETWEEN_TAGS="${TAG_LATEST}"
+        fi
+        IFS=$'\n'
+        for LINE in $(git log --oneline --pretty=tformat:"%s by @%an in %h" ${BETWEEN_TAGS} | sort); do
+          BODY+="- ${LINE}%0A"
+        done
+        # RELEASE_NOTES
+        RELEASE_NOTES="${HEADER}%0A${BODY}"
+        echo ::set-output name=RELEASE_NOTES::${RELEASE_NOTES}
