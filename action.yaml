@@ -27,7 +27,7 @@ runs:
           BETWEEN_TAGS="${TAG_LATEST}"
         fi
         IFS=$'\n'
-        for LINE in $(git log --oneline --pretty=tformat:"%s by @%an in %h" ${BETWEEN_TAGS} | sort); do
+        for LINE in $(git log --oneline --pretty=tformat:"%s by @%an in %h" ${BETWEEN_TAGS} | grep ^: | grep -v ^:ok_hand: | sort); do
           BODY+="- ${LINE}%0A"
         done
         # RELEASE_NOTES

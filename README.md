@@ -41,7 +41,7 @@ jobs:
           fetch-depth: 0
 
       - name: Create Release Notes
-        uses: tomozo6/create-release-notes@main
+        uses: tomozo6/create-release-notes@v2.0.0
         id: create-release-notes
 
       - name: Create Release
